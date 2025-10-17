@@ -6,11 +6,9 @@ CREATE TABLE IF NOT EXISTS users (
     id VARCHAR(20) PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
     prenom VARCHAR(100) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
     rp_id VARCHAR(10) UNIQUE,
     discord VARCHAR(100),
-    phone VARCHAR(20),
-    address TEXT,
+    phone VARCHAR(12), -- Format XXXXX-XXXXX
     password_hash VARCHAR(255) NOT NULL,
     role ENUM('client', 'admin') DEFAULT 'client',
     newsletter BOOLEAN DEFAULT FALSE,
@@ -109,8 +107,8 @@ INSERT INTO articles (title, excerpt, content, image_url, author, published_date
 ON DUPLICATE KEY UPDATE title = VALUES(title);
 
 -- Index pour améliorer les performances
-CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_rp_id ON users(rp_id);
+CREATE INDEX idx_users_phone ON users(phone);
 CREATE INDEX idx_contacts_status ON contacts(status);
 CREATE INDEX idx_reservations_date ON reservations(reservation_date);
 CREATE INDEX idx_reservations_status ON reservations(status);

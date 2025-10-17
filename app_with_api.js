@@ -753,7 +753,7 @@ class PizzaThisApp {
         }
 
         // Remplir les champs du profil
-        const fields = ['nom', 'prenom', 'email', 'discord', 'phone', 'address'];
+        const fields = ['nom', 'prenom', 'rp_id', 'discord', 'phone'];
         fields.forEach(field => {
             const input = document.querySelector(`#profile-form [name="${field}"]`);
             if (input && user[field]) {

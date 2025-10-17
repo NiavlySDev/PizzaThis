@@ -79,9 +79,9 @@ function login() {
         $db = new Database();
         $conn = $db->getConnection();
         
-        // Chercher l'utilisateur par email, ID utilisateur ou ID RP
-        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? OR id = ? OR rp_id = ?");
-        $stmt->execute([$identifier, $identifier, $identifier]);
+        // Chercher l'utilisateur par ID utilisateur ou ID RP
+        $stmt = $conn->prepare("SELECT * FROM users WHERE id = ? OR rp_id = ?");
+        $stmt->execute([$identifier, $identifier]);
         $user = $stmt->fetch();
         
         if (!$user || !verifyPassword($password, $user['password_hash'])) {
@@ -161,12 +161,18 @@ function register() {
         // Hasher le mot de passe
         $passwordHash = hashPassword($password);
         
-        // Générer un email unique basé sur l'ID RP
-        $email = 'user_' . $rp_id . '@pizzathis-rp.local';
+        // Formater le téléphone si fourni
+        $phone = null;
+        if (isset($data['phone']) && !empty(trim($data['phone']))) {
+            $phoneDigits = preg_replace('/[^0-9]/', '', trim($data['phone']));
+            if (strlen($phoneDigits) >= 10) {
+                $phone = substr($phoneDigits, 0, 5) . '-' . substr($phoneDigits, 5, 5);
+            }
+        }
         
         // Insérer le nouvel utilisateur
         $stmt = $conn->prepare("
-            INSERT INTO users (id, nom, prenom, email, rp_id, discord, password_hash, newsletter, member_since)
+            INSERT INTO users (id, nom, prenom, rp_id, discord, phone, password_hash, newsletter, member_since)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, YEAR(CURDATE()))
         ");
         
@@ -174,9 +180,9 @@ function register() {
             $userId,
             trim($data['nom']),
             trim($data['prenom']),
-            $email,
             $rp_id,
             trim($data['discord']),
+            $phone,
             $passwordHash,
             isset($data['newsletter']) ? (bool)$data['newsletter'] : false
         ]);
@@ -267,20 +273,33 @@ function updateProfile() {
         $updates = [];
         $params = [];
         
-        $allowedFields = ['nom', 'prenom', 'email', 'discord', 'phone', 'address', 'newsletter'];
+        $allowedFields = ['nom', 'prenom', 'rp_id', 'discord', 'phone', 'newsletter'];
         
         foreach ($allowedFields as $field) {
             if (isset($data[$field])) {
-                if ($field === 'email') {
-                    // Vérifier que l'email n'est pas déjà utilisé par un autre utilisateur
-                    $stmt = $conn->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
+                if ($field === 'rp_id') {
+                    // Vérifier que l'ID RP n'est pas déjà utilisé par un autre utilisateur
+                    $stmt = $conn->prepare("SELECT id FROM users WHERE rp_id = ? AND id != ?");
                     $stmt->execute([$data[$field], $user['id']]);
                     if ($stmt->fetch()) {
-                        sendError('Cet email est déjà utilisé par un autre compte');
+                        sendError('Cet ID RP est déjà utilisé par un autre compte');
                     }
                     
-                    if (!filter_var($data[$field], FILTER_VALIDATE_EMAIL)) {
-                        sendError('Format d\'email invalide');
+                    // Validation ID RP (doit être numérique)
+                    if (!preg_match('/^[0-9]+$/', $data[$field])) {
+                        sendError('L\'ID RP doit contenir uniquement des chiffres');
+                    }
+                } else if ($field === 'phone') {
+                    // Formater le téléphone au format XXXXX-XXXXX
+                    if (!empty(trim($data[$field]))) {
+                        $phoneDigits = preg_replace('/[^0-9]/', '', trim($data[$field]));
+                        if (strlen($phoneDigits) >= 10) {
+                            $data[$field] = substr($phoneDigits, 0, 5) . '-' . substr($phoneDigits, 5, 5);
+                        } else {
+                            sendError('Le numéro de téléphone doit contenir au moins 10 chiffres');
+                        }
+                    } else {
+                        $data[$field] = null;
                     }
                 }
                 
