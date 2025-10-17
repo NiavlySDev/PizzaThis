@@ -21,42 +21,6 @@ Site web moderne pour Pizza This avec système de gestion intégré utilisant un
 - **Statistiques et tableau de bord** admin
 - **Intégration Discord** pour notifications
 
-### 🗄️ Base de Données
-- **Serveur**: `we01io.myd.infomaniak.com:3306`
-- **Base**: `we01io_pizza`
-- **Tables**: users, contacts, reservations, articles, site_stats
-- **Comptes de test** pré-configurés
-
-## 🚀 Installation
-
-### 1. Configuration de la base de données
-
-1. Accédez à `/api/setup.php` dans votre navigateur
-2. Cliquez sur "Initialiser la base de données"
-3. Vérifiez que toutes les tables sont créées correctement
-4. Testez les fonctionnalités avec le bouton "Tester"
-
-### 2. Comptes de test
-
-Après l'initialisation, deux comptes sont disponibles :
-
-**Administrateur :**
-- Email: `admin@pizzathis.fr`
-- Mot de passe: `admin123`
-- Accès: Panel d'administration complet
-
-**Client :**
-- Email: `client@test.fr`
-- Mot de passe: `client123`
-- Accès: Fonctionnalités client standard
-
-### 3. Configuration du serveur web
-
-Assurez-vous que :
-- PHP 7.4+ est installé avec l'extension PDO MySQL
-- Le fichier `.htaccess` est actif (mod_rewrite)
-- Les permissions d'écriture sont configurées si nécessaire
-
 ## 📁 Structure des fichiers
 
 ```
@@ -156,20 +120,6 @@ Les formulaires de contact et réservation envoient automatiquement des notifica
 - **Statuts** : En attente, Confirmée, Annulée, Terminée
 - **Notifications Discord** automatiques
 - **Gestion admin** des réservations
-
-## 🔧 Maintenance
-
-### Sauvegarde
-```bash
-# Sauvegarde de la base de données
-mysqldump -h we01io.myd.infomaniak.com -P 3306 -u we01io_tfeAdmin -p we01io_pizza > backup.sql
-```
-
-### Statistiques automatiques
-Une procédure stockée `UpdateDailyStats()` peut être exécutée quotidiennement via cron pour maintenir les statistiques à jour.
-
-### Logs
-Les erreurs sont enregistrées via `error_log()` PHP. Consultez les logs du serveur pour le debugging.
 
 ## 🚦 Statut de Migration
 
