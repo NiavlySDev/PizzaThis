@@ -69,7 +69,7 @@ function submitContact() {
     $data = getJsonInput();
     
     // Validation des champs obligatoires
-    $required = ['nom', 'discord', 'subject', 'message'];
+    $required = ['nom', 'discord', 'sujet', 'message'];
     foreach ($required as $field) {
         if (!isset($data[$field]) || empty(trim($data[$field]))) {
             sendError("Le champ $field est obligatoire");
@@ -94,7 +94,7 @@ function submitContact() {
             $userId,
             trim($data['nom']),
             trim($data['discord']),
-            trim($data['subject']),
+            trim($data['sujet']),
             trim($data['message'])
         ]);
         
@@ -105,7 +105,7 @@ function submitContact() {
             'id' => $contactId,
             'nom' => trim($data['nom']),
             'discord' => trim($data['discord']),
-            'subject' => trim($data['subject']),
+            'subject' => trim($data['sujet']),
             'message' => trim($data['message'])
         ]);
         
