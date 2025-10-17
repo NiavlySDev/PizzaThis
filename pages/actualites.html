@@ -1,0 +1,142 @@
+<!-- News Hero Section -->
+<section class="news-hero">
+    <div class="container">
+        <h1>Actualités Pizza This</h1>
+        <p>Découvrez les dernières nouveautés, événements et promotions de votre pizzeria préférée</p>
+    </div>
+</section>
+
+<!-- Actualités Section -->
+<section class="news-section">
+    <div class="container">
+        <div class="news-grid">
+            <!-- Article 1 -->
+            <article class="news-card featured" data-article="pepperoni">
+                <div class="news-image">
+                    <img src="images/peperoni.avif" alt="Nouvelle pizza pepperoni">
+                    <div class="news-badge">Nouveau</div>
+                </div>
+                <div class="news-content">
+                    <div class="news-meta">
+                        <span class="news-date">15 octobre 2025</span>
+                        <span class="news-category">Menu</span>
+                    </div>
+                    <h2>Nouvelle Pizza Pepperoni Artisanale</h2>
+                    <p>Découvrez notre toute nouvelle pizza pepperoni préparée avec du pepperoni artisanal italien et notre mozzarella fraîche. Une explosion de saveurs qui ravira vos papilles !</p>
+                    <a href="#" class="btn-secondary read-more-btn" data-article="pepperoni">Lire plus</a>
+                </div>
+            </article>
+
+            <!-- Article 2 -->
+            <article class="news-card" data-article="tiramisu">
+                <div class="news-image">
+                    <img src="images/TIRAMISU FRAISE.jpg" alt="Nouveau dessert tiramisu">
+                </div>
+                <div class="news-content">
+                    <div class="news-meta">
+                        <span class="news-date">12 octobre 2025</span>
+                        <span class="news-category">Desserts</span>
+                    </div>
+                    <h3>Tiramisu aux Fraises</h3>
+                    <p>Notre chef pâtissier vous présente sa nouvelle création : un tiramisu aux fraises fraîches, parfait pour terminer votre repas en beauté.</p>
+                    <a href="#" class="btn-secondary read-more-btn" data-article="tiramisu">Lire plus</a>
+                </div>
+            </article>
+
+            <!-- Article 3 -->
+            <article class="news-card" data-article="event-poulet">
+                <div class="news-image">
+                    <img src="images/POULET.webp" alt="Pizza poulet BBQ">
+                </div>
+                <div class="news-content">
+                    <div class="news-meta">
+                        <span class="news-date">8 octobre 2025</span>
+                        <span class="news-category">Événement</span>
+                    </div>
+                    <h3>Soirée Dégustation Pizza Poulet</h3>
+                    <p>Rejoignez-nous le 20 octobre pour une soirée spéciale dégustation de nos pizzas au poulet. Ambiance conviviale garantie !</p>
+                    <a href="#" class="btn-secondary read-more-btn" data-article="event-poulet">Lire plus</a>
+                </div>
+            </article>
+
+            <!-- Article 4 -->
+            <article class="news-card" data-article="app-mobile">
+                <div class="news-image">
+                    <div class="news-placeholder">📱</div>
+                </div>
+                <div class="news-content">
+                    <div class="news-meta">
+                        <span class="news-date">5 octobre 2025</span>
+                        <span class="news-category">Service</span>
+                    </div>
+                    <h3>Application Mobile Pizza This</h3>
+                    <p>Bientôt disponible ! Notre application mobile pour commander vos pizzas préférées en quelques clics. Restez connectés !</p>
+                    <a href="#" class="btn-secondary read-more-btn" data-article="app-mobile">Lire plus</a>
+                </div>
+            </article>
+
+            <!-- Article 5 -->
+            <article class="news-card" data-article="biscotti">
+                <div class="news-image">
+                    <img src="images/BISCOTTI.jpg" alt="Biscotti maison">
+                </div>
+                <div class="news-content">
+                    <div class="news-meta">
+                        <span class="news-date">2 octobre 2025</span>
+                        <span class="news-category">Desserts</span>
+                    </div>
+                    <h3>Biscotti Faits Maison</h3>
+                    <p>Nos biscotti traditionnels italiens arrivent à la carte ! Parfaits avec votre café ou en dessert après votre pizza.</p>
+                    <a href="#" class="btn-secondary read-more-btn" data-article="biscotti">Lire plus</a>
+                </div>
+            </article>
+
+            <!-- Article 6 -->
+            <article class="news-card" data-article="promo-etudiants">
+                <div class="news-image">
+                    <div class="news-placeholder">🎉</div>
+                </div>
+                <div class="news-content">
+                    <div class="news-meta">
+                        <span class="news-date">28 septembre 2025</span>
+                        <span class="news-category">Promotion</span>
+                    </div>
+                    <h3>Promotion Étudiants</h3>
+                    <p>-20% sur toutes nos pizzas pour les étudiants tous les mardis ! Présentez simplement votre carte étudiante.</p>
+                    <a href="#" class="btn-secondary read-more-btn" data-article="promo-etudiants">Lire plus</a>
+                </div>
+            </article>
+        </div>
+
+        <!-- Newsletter Section -->
+        <div class="newsletter-section">
+            <div class="newsletter-content">
+                <h2>Restez informé</h2>
+                <p>Abonnez-vous à notre newsletter pour recevoir nos dernières actualités et offres exclusives</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Votre adresse e-mail" required>
+                    <button type="submit" class="btn-primary">S'abonner</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Article Modal -->
+<div id="article-modal" class="article-modal" style="display: none;">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modal-title"></h2>
+            <span class="modal-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="modal-meta">
+                <span id="modal-date" class="modal-date"></span>
+                <span id="modal-category" class="modal-category"></span>
+            </div>
+            <div id="modal-image" class="modal-image"></div>
+            <div id="modal-content-text" class="modal-text"></div>
+        </div>
+    </div>
+</div>

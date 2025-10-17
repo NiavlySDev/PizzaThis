@@ -1,0 +1,93 @@
+<!-- Contact Section -->
+<section id="contact" class="contact-section">
+    <div class="container">
+        <h2>Nous contacter</h2>
+        
+        <!-- Informations de contact -->
+        <div class="contact-info-section">
+            <div class="contact-info">
+                <div class="contact-item">
+                    <h4>📱 Téléphone</h4>
+                    <p>37833-69283</p>
+                </div>
+                <div class="contact-item">
+                    <h4>✉️ Email</h4>
+                    <p>niavlysdev@ctg.fr</p>
+                </div>
+                <div class="contact-item">
+                    <h4>🌐 Discord</h4>
+                    <p>https://discord.gg/jPDZB3acu4</p>
+                </div>
+                <div class="contact-item">
+                    <h4>🕒 Horaires</h4>
+                    <p>6h/24h - Ouvert en permanence</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulaires -->
+        <div class="forms-section">
+            <!-- Onglets pour les formulaires -->
+            <div class="form-tabs">
+                <button type="button" class="tab-button active" data-tab="contact">
+                    💬 Contact
+                </button>
+                <button type="button" class="tab-button" data-tab="reservation">
+                    📅 Réservation
+                </button>
+            </div>
+
+            <!-- Formulaire de Contact -->
+            <div id="contact-tab" class="form-container active">
+                <form class="contact-form" id="contact-form">
+                    <h3>💬 Nous contacter</h3>
+                    <p class="form-description">Une question, une suggestion, ou besoin d'informations ? Contactez-nous !</p>
+                    
+                    <div class="form-row">
+                        <input type="text" name="nom" placeholder="Nom" required>
+                        <input type="text" name="prenom" placeholder="Prénom" required>
+                    </div>
+                    
+                    <input type="text" name="id" placeholder="ID (numéro client ou identifiant)" required>
+                    <input type="text" name="discord" placeholder="Pseudo Discord" required>
+                    <input type="text" name="sujet" placeholder="Sujet de votre message" required>
+                    <textarea name="message" placeholder="Votre message" rows="5" required></textarea>
+                    
+                    <button type="submit" class="btn-primary">
+                        <span class="btn-text">Envoyer le message</span>
+                        <span class="btn-loading" style="display: none;">Envoi en cours...</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Formulaire de Réservation -->
+            <div id="reservation-tab" class="form-container">
+                <form class="reservation-form" id="reservation-form">
+                    <h3>📅 Faire une réservation</h3>
+                    <p class="form-description">Réservez votre table ou privatisez notre restaurant pour vos événements.</p>
+                    
+                    <div class="form-row">
+                        <input type="text" name="nom" placeholder="Nom" required>
+                        <input type="text" name="prenom" placeholder="Prénom" required>
+                    </div>
+                    
+                    <input type="text" name="id" placeholder="ID (numéro client ou identifiant)" required>
+                    <input type="text" name="discord" placeholder="Pseudo Discord" required>
+                    <input type="number" name="personnes" placeholder="Nombre de personnes" min="1" max="50" required>
+                    
+                    <div class="form-row">
+                        <input type="date" name="jour" required>
+                        <input type="time" name="heure" required>
+                    </div>
+                    
+                    <textarea name="message" placeholder="Informations complémentaires (allergies, demandes spéciales, etc.)" rows="4"></textarea>
+                    
+                    <button type="submit" class="btn-primary">
+                        <span class="btn-text">Réserver</span>
+                        <span class="btn-loading" style="display: none;">Envoi en cours...</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
