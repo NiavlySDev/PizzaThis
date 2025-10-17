@@ -214,8 +214,9 @@ class PizzaThisApp {
             if (this.user) {
                 authLink.innerHTML = `
                     <span class="user-info">
+                        <i class="fas fa-user-circle"></i>
                         ${this.user.prenom} ${this.user.nom}
-                        ${this.user.role === 'admin' ? '<span class="admin-badge">Admin</span>' : ''}
+                        ${this.user.role === 'admin' ? '<span class="admin-badge"><i class="fas fa-crown"></i> Admin</span>' : ''}
                     </span>
                 `;
                 authLink.onclick = () => this.loadPage('connexion');
@@ -471,6 +472,9 @@ class PizzaThisApp {
 
         // Afficher l'onglet approprié
         if (this.user) {
+            // Utilisateur connecté - masquer les onglets de connexion/inscription
+            this.hideAuthTabs(['login', 'register']);
+            this.showAuthTabs(['profile']);
             this.switchAuthTab('profile');
             this.populateProfile(this.user);
             
@@ -483,6 +487,9 @@ class PizzaThisApp {
                 }
             }
         } else {
+            // Utilisateur non connecté - afficher connexion/inscription, masquer profil
+            this.hideAuthTabs(['profile']);
+            this.showAuthTabs(['login', 'register']);
             this.switchAuthTab('login');
         }
     }
@@ -626,6 +633,24 @@ class PizzaThisApp {
         this.toggleFormLoading(form, false);
     }
 
+    hideAuthTabs(tabNames) {
+        tabNames.forEach(tabName => {
+            const tabButton = document.querySelector(`[data-auth-tab="${tabName}"]`);
+            if (tabButton) {
+                tabButton.style.display = 'none';
+            }
+        });
+    }
+
+    showAuthTabs(tabNames) {
+        tabNames.forEach(tabName => {
+            const tabButton = document.querySelector(`[data-auth-tab="${tabName}"]`);
+            if (tabButton) {
+                tabButton.style.display = 'block';
+            }
+        });
+    }
+
     switchAuthTab(tabName) {
         // Gérer les onglets
         const tabs = document.querySelectorAll('.auth-tab-button');
@@ -713,6 +738,12 @@ class PizzaThisApp {
     logout() {
         this.clearToken();
         this.updateAuthUI();
+        
+        // Réafficher les onglets de connexion/inscription et masquer le profil
+        this.hideAuthTabs(['profile']);
+        this.showAuthTabs(['login', 'register']);
+        this.switchAuthTab('login');
+        
         this.loadPage('accueil');
         this.showFormMessage(document.body, 'Vous avez été déconnecté avec succès.', 'success');
     }
