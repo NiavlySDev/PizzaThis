@@ -731,6 +731,27 @@ class PizzaThisApp {
     }
 
     populateProfile(user) {
+        console.log('populateProfile called with user:', user);
+        
+        // Mettre à jour l'en-tête du profil
+        const profileName = document.getElementById('profile-name');
+        const profileId = document.getElementById('profile-id');
+        
+        console.log('profileName element:', profileName);
+        console.log('profileId element:', profileId);
+        
+        if (profileName) {
+            const fullName = `${user.prenom || ''} ${user.nom || ''}`.trim();
+            console.log('Setting profile name to:', fullName);
+            profileName.textContent = fullName;
+        }
+        
+        if (profileId) {
+            const idText = `ID: ${user.rp_id || user.id || 'N/A'}`;
+            console.log('Setting profile ID to:', idText);
+            profileId.textContent = idText;
+        }
+
         // Remplir les champs du profil
         const fields = ['nom', 'prenom', 'email', 'discord', 'phone', 'address'];
         fields.forEach(field => {

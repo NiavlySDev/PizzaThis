@@ -125,7 +125,7 @@ function submitReservation() {
     $data = getJsonInput();
     
     // Validation des champs obligatoires
-    $required = ['nom', 'discord', 'people', 'date', 'time'];
+    $required = ['nom', 'discord', 'personnes', 'jour', 'heure'];
     foreach ($required as $field) {
         if (!isset($data[$field]) || empty(trim($data[$field]))) {
             sendError("Le champ $field est obligatoire");
@@ -133,8 +133,8 @@ function submitReservation() {
     }
     
     // Validation de la date et heure
-    $reservationDate = $data['date'];
-    $reservationTime = $data['time'];
+    $reservationDate = $data['jour'];
+    $reservationTime = $data['heure'];
     
     if (!strtotime($reservationDate) || $reservationDate < date('Y-m-d')) {
         sendError('Date de réservation invalide');
@@ -144,7 +144,7 @@ function submitReservation() {
         sendError('Heure de réservation invalide');
     }
     
-    $peopleCount = intval($data['people']);
+    $peopleCount = intval($data['personnes']);
     if ($peopleCount < 1 || $peopleCount > 20) {
         sendError('Nombre de personnes invalide (1-20)');
     }
