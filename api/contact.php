@@ -385,110 +385,132 @@ function updateReservation() {
 function sendDiscordNotification($type, $data) {
     $webhookUrl = 'https://discord.com/api/webhooks/1319344399207067749/JGWwPAyt16oCRwYBIHz-feJ1fLLmaDhGe3Z5LKdqOP0cMBP5N2vjNMkXiY8rpZqKzAlh';
     
-    if ($type === 'contact') {
-        $embed = [
-            'title' => '📩 Nouveau Message de Contact',
-            'description' => "**Sujet:** " . $data['subject'],
-            'color' => 3447003, // Bleu
-            'fields' => [
-                [
-                    'name' => '👤 Nom',
-                    'value' => $data['nom'],
-                    'inline' => true
+    try {
+        if ($type === 'contact') {
+            $embed = [
+                'title' => '📩 Nouveau Message de Contact',
+                'description' => "**Sujet:** " . ($data['subject'] ?? 'Aucun sujet'),
+                'color' => 3447003, // Bleu
+                'fields' => [
+                    [
+                        'name' => '👤 Nom',
+                        'value' => $data['nom'] ?? 'Non spécifié',
+                        'inline' => true
+                    ],
+                    [
+                        'name' => '🎮 Discord',
+                        'value' => $data['discord'] ?? 'Non spécifié',
+                        'inline' => true
+                    ],
+                    [
+                        'name' => '📝 Message',
+                        'value' => isset($data['message']) ? (strlen($data['message']) > 1000 ? substr($data['message'], 0, 1000) . '...' : $data['message']) : 'Aucun message',
+                        'inline' => false
+                    ],
+                    [
+                        'name' => '🆔 ID Contact',
+                        'value' => '#' . ($data['id'] ?? 'N/A'),
+                        'inline' => true
+                    ]
                 ],
-                [
-                    'name' => '🎮 Discord',
-                    'value' => $data['discord'],
-                    'inline' => true
+                'timestamp' => date('c'),
+                'footer' => [
+                    'text' => 'Pizza This - Système de Contact'
+                ]
+            ];
+            
+            $payload = [
+                'content' => '<@&1428738967053795479> Nouveau message de contact reçu !',
+                'embeds' => [$embed]
+            ];
+        } else if ($type === 'reservation') {
+            $reservationDate = $data['date'] ?? $data['jour'] ?? date('Y-m-d');
+            $reservationTime = $data['time'] ?? $data['heure'] ?? '12:00';
+            
+            $embed = [
+                'title' => '🍕 Nouvelle Réservation',
+                'description' => "**Demande de réservation pour le " . date('d/m/Y', strtotime($reservationDate)) . "**",
+                'color' => 15844367, // Orange
+                'fields' => [
+                    [
+                        'name' => '👤 Nom',
+                        'value' => $data['nom'] ?? 'Non spécifié',
+                        'inline' => true
+                    ],
+                    [
+                        'name' => '🎮 Discord',
+                        'value' => $data['discord'] ?? 'Non spécifié',
+                        'inline' => true
+                    ],
+                    [
+                        'name' => '👥 Nombre de personnes',
+                        'value' => ($data['people'] ?? $data['personnes'] ?? 1) . ' personne(s)',
+                        'inline' => true
+                    ],
+                    [
+                        'name' => '📅 Date',
+                        'value' => date('d/m/Y', strtotime($reservationDate)),
+                        'inline' => true
+                    ],
+                    [
+                        'name' => '🕐 Heure',
+                        'value' => $reservationTime,
+                        'inline' => true
+                    ],
+                    [
+                        'name' => '🆔 ID Réservation',
+                        'value' => '#' . ($data['id'] ?? 'N/A'),
+                        'inline' => true
+                    ]
                 ],
-                [
-                    'name' => '📝 Message',
+                'timestamp' => date('c'),
+                'footer' => [
+                    'text' => 'Pizza This - Système de Réservation'
+                ]
+            ];
+            
+            if (!empty($data['message'])) {
+                $embed['fields'][] = [
+                    'name' => '📝 Message supplémentaire',
                     'value' => strlen($data['message']) > 1000 ? substr($data['message'], 0, 1000) . '...' : $data['message'],
                     'inline' => false
-                ],
-                [
-                    'name' => '🆔 ID Contact',
-                    'value' => '#' . $data['id'],
-                    'inline' => true
-                ]
-            ],
-            'timestamp' => date('c'),
-            'footer' => [
-                'text' => 'Pizza This - Système de Contact'
-            ]
-        ];
-        
-        $payload = [
-            'content' => '<@&1428738967053795479> Nouveau message de contact reçu !',
-            'embeds' => [$embed]
-        ];
-    } else {
-        $embed = [
-            'title' => '🍕 Nouvelle Réservation',
-            'description' => "**Demande de réservation pour le " . date('d/m/Y', strtotime($data['date'])) . "**",
-            'color' => 15844367, // Orange
-            'fields' => [
-                [
-                    'name' => '👤 Nom',
-                    'value' => $data['nom'],
-                    'inline' => true
-                ],
-                [
-                    'name' => '🎮 Discord',
-                    'value' => $data['discord'],
-                    'inline' => true
-                ],
-                [
-                    'name' => '👥 Nombre de personnes',
-                    'value' => $data['people'] . ' personne(s)',
-                    'inline' => true
-                ],
-                [
-                    'name' => '📅 Date',
-                    'value' => date('d/m/Y', strtotime($data['date'])),
-                    'inline' => true
-                ],
-                [
-                    'name' => '🕐 Heure',
-                    'value' => $data['time'],
-                    'inline' => true
-                ],
-                [
-                    'name' => '🆔 ID Réservation',
-                    'value' => '#' . $data['id'],
-                    'inline' => true
-                ]
-            ],
-            'timestamp' => date('c'),
-            'footer' => [
-                'text' => 'Pizza This - Système de Réservation'
-            ]
-        ];
-        
-        if (!empty($data['message'])) {
-            $embed['fields'][] = [
-                'name' => '📝 Message supplémentaire',
-                'value' => strlen($data['message']) > 1000 ? substr($data['message'], 0, 1000) . '...' : $data['message'],
-                'inline' => false
+                ];
+            }
+            
+            $payload = [
+                'content' => '<@&1428738967053795479> Nouvelle réservation reçue !',
+                'embeds' => [$embed]
             ];
+        } else {
+            error_log("Type de notification Discord non supporté: $type");
+            return false;
         }
         
-        $payload = [
-            'content' => '<@&1428738967053795479> Nouvelle réservation reçue !',
-            'embeds' => [$embed]
-        ];
+        // Envoyer vers Discord avec gestion d'erreurs
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'POST',
+                'header' => 'Content-Type: application/json',
+                'content' => json_encode($payload),
+                'timeout' => 10,
+                'ignore_errors' => false
+            ]
+        ]);
+        
+        $result = file_get_contents($webhookUrl, false, $context);
+        
+        if ($result === false) {
+            $error = error_get_last();
+            error_log("Erreur envoi Discord webhook: " . ($error['message'] ?? 'Erreur inconnue'));
+            return false;
+        }
+        
+        error_log("Notification Discord envoyée avec succès pour $type #" . ($data['id'] ?? 'N/A'));
+        return true;
+        
+    } catch (Exception $e) {
+        error_log("Exception lors de l'envoi Discord: " . $e->getMessage());
+        return false;
     }
-    
-    // Envoyer vers Discord (de manière asynchrone)
-    $context = stream_context_create([
-        'http' => [
-            'method' => 'POST',
-            'header' => 'Content-Type: application/json',
-            'content' => json_encode($payload),
-            'timeout' => 5
-        ]
-    ]);
-    
-    @file_get_contents($webhookUrl, false, $context);
 }
 ?>
