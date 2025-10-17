@@ -415,11 +415,11 @@ class PizzaThisApp {
 
     attachAuthEvents() {
         // Gestion des onglets
-        const tabButtons = document.querySelectorAll('.auth-tab');
+        const tabButtons = document.querySelectorAll('.auth-tab-button');
         if (tabButtons) {
             tabButtons.forEach(button => {
                 button.addEventListener('click', (e) => {
-                    const tabName = e.target.getAttribute('data-tab');
+                    const tabName = e.target.getAttribute('data-auth-tab');
                     this.switchAuthTab(tabName);
                 });
             });
@@ -628,19 +628,19 @@ class PizzaThisApp {
 
     switchAuthTab(tabName) {
         // Gérer les onglets
-        const tabs = document.querySelectorAll('.auth-tab');
-        const contents = document.querySelectorAll('.auth-content');
+        const tabs = document.querySelectorAll('.auth-tab-button');
+        const contents = document.querySelectorAll('.auth-container');
 
         tabs.forEach(tab => {
             tab.classList.remove('active');
-            if (tab.getAttribute('data-tab') === tabName) {
+            if (tab.getAttribute('data-auth-tab') === tabName) {
                 tab.classList.add('active');
             }
         });
 
         contents.forEach(content => {
             content.classList.remove('active');
-            if (content.id === `${tabName}-content`) {
+            if (content.id === `${tabName}-tab`) {
                 content.classList.add('active');
             }
         });
