@@ -315,6 +315,9 @@ class PizzaThisApp {
     // ===== GESTION DES FORMULAIRES =====
 
     attachFormEvents() {
+        // Gestion des onglets contact/réservation
+        this.setupContactTabs();
+        
         // Formulaire de contact
         const contactForm = document.getElementById('contact-form');
         if (contactForm) {
@@ -346,20 +349,46 @@ class PizzaThisApp {
         }
     }
 
+    setupContactTabs() {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const formContainers = document.querySelectorAll('.form-container');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.getAttribute('data-tab');
+                
+                // Retirer la classe active de tous les boutons et formulaires
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                formContainers.forEach(container => container.classList.remove('active'));
+                
+                // Ajouter la classe active au bouton cliqué
+                button.classList.add('active');
+                
+                // Afficher le bon formulaire
+                const targetContainer = document.getElementById(`${targetTab}-tab`);
+                if (targetContainer) {
+                    targetContainer.classList.add('active');
+                }
+            });
+        });
+    }
+
     async handleContactForm(form) {
         console.log('handleContactForm called');
         
         const formData = new FormData(form);
         const data = {
             nom: formData.get('nom'),
+            prenom: formData.get('prenom'),
+            id: formData.get('id'),
             discord: formData.get('discord'),
-            subject: formData.get('subject'),
+            sujet: formData.get('sujet'),
             message: formData.get('message')
         };
 
-        // Validation basique
-        if (!data.nom || !data.discord || !data.subject || !data.message) {
-            this.showFormMessage(form, 'Veuillez remplir tous les champs.', 'error');
+        // Validation basique (tous les champs sont requis sauf prenom)
+        if (!data.nom || !data.id || !data.discord || !data.sujet || !data.message) {
+            this.showFormMessage(form, 'Veuillez remplir tous les champs obligatoires.', 'error');
             return;
         }
 
@@ -385,26 +414,35 @@ class PizzaThisApp {
         const formData = new FormData(form);
         const data = {
             nom: formData.get('nom'),
+            prenom: formData.get('prenom'),
+            id: formData.get('id'),
             discord: formData.get('discord'),
-            people: formData.get('people'),
-            date: formData.get('date'),
-            time: formData.get('time'),
+            personnes: formData.get('personnes'),
+            jour: formData.get('jour'),
+            heure: formData.get('heure'),
             message: formData.get('message') || ''
         };
 
-        // Validation basique
-        if (!data.nom || !data.discord || !data.people || !data.date || !data.time) {
+        // Validation basique (tous les champs sont requis sauf prenom et message)
+        if (!data.nom || !data.id || !data.discord || !data.personnes || !data.jour || !data.heure) {
             this.showFormMessage(form, 'Veuillez remplir tous les champs obligatoires.', 'error');
             return;
         }
 
         // Validation de la date
-        const selectedDate = new Date(data.date);
+        const selectedDate = new Date(data.jour);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
         if (selectedDate < today) {
             this.showFormMessage(form, 'La date de réservation ne peut pas être dans le passé.', 'error');
+            return;
+        }
+
+        // Validation du nombre de personnes
+        const numPersonnes = parseInt(data.personnes);
+        if (numPersonnes < 1 || numPersonnes > 50) {
+            this.showFormMessage(form, 'Le nombre de personnes doit être entre 1 et 50.', 'error');
             return;
         }
 

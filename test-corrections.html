@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Formulaires et Onglets</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test des Corrections</h1>
+        
+        <div class="test-section">
+            <h2>✅ Corrections apportées :</h2>
+            <ul>
+                <li><strong>Formulaire de Contact</strong> : Validation corrigée pour tous les champs requis (nom, id, discord, sujet, message)</li>
+                <li><strong>Onglet Réservation</strong> : Ajout de la gestion des onglets avec JavaScript</li>
+                <li><strong>Navigation des onglets</strong> : Fonctionnalité de basculement entre Contact et Réservation</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 Champs du formulaire de contact :</h2>
+            <ul>
+                <li>✅ <strong>Nom</strong> (obligatoire)</li>
+                <li>⚪ <strong>Prénom</strong> (optionnel)</li>
+                <li>✅ <strong>ID</strong> (obligatoire)</li>
+                <li>✅ <strong>Discord</strong> (obligatoire)</li>
+                <li>✅ <strong>Sujet</strong> (obligatoire)</li>
+                <li>✅ <strong>Message</strong> (obligatoire)</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🎯 Fonctionnalités des onglets :</h2>
+            <ul>
+                <li>✅ Clic sur "Contact" → Affiche le formulaire de contact</li>
+                <li>✅ Clic sur "Réservation" → Affiche le formulaire de réservation</li>
+                <li>✅ Classes CSS active correctement appliquées</li>
+                <li>✅ Basculement fluide entre les formulaires</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🚀 Pour tester :</h2>
+            <ol>
+                <li>Allez sur la page <strong>Contact</strong></li>
+                <li>Testez le basculement entre les onglets "Contact" et "Réservation"</li>
+                <li>Remplissez tous les champs du formulaire de contact</li>
+                <li>Vérifiez que la validation fonctionne correctement</li>
+                <li>Testez le formulaire de réservation</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>🔧 Détails techniques :</h2>
+            <ul>
+                <li><strong>Validation JS</strong> : Vérifie nom, id, discord, sujet, message (prenom optionnel)</li>
+                <li><strong>Gestion onglets</strong> : setupContactTabs() dans attachFormEvents()</li>
+                <li><strong>Event listeners</strong> : Ajoutés pour data-tab="contact" et data-tab="reservation"</li>
+                <li><strong>Classes CSS</strong> : Basculement automatique des classes .active</li>
+            </ul>
+        </div>
+    </div>
+
+    <style>
+        .container { max-width: 800px; margin: 2rem auto; padding: 1rem; }
+        .test-section { background: #f8f9fa; padding: 1rem; margin: 1rem 0; border-radius: 8px; border-left: 4px solid #007bff; }
+        .test-section h2 { color: #007bff; margin-top: 0; }
+        .test-section ul, .test-section ol { margin: 0.5rem 0; }
+        .test-section li { margin: 0.25rem 0; }
+    </style>
+</body>
+</html>
