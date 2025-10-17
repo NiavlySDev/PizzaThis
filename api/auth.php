@@ -79,9 +79,9 @@ function login() {
         $db = new Database();
         $conn = $db->getConnection();
         
-        // Chercher l'utilisateur par email ou ID
-        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? OR id = ?");
-        $stmt->execute([$identifier, $identifier]);
+        // Chercher l'utilisateur par email, ID utilisateur ou ID RP
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? OR id = ? OR rp_id = ?");
+        $stmt->execute([$identifier, $identifier, $identifier]);
         $user = $stmt->fetch();
         
         if (!$user || !verifyPassword($password, $user['password_hash'])) {
@@ -115,19 +115,19 @@ function register() {
     $data = getJsonInput();
     
     // Validation des champs obligatoires
-    $required = ['nom', 'prenom', 'email', 'discord', 'password'];
+    $required = ['nom', 'prenom', 'rp_id', 'discord', 'password'];
     foreach ($required as $field) {
         if (!isset($data[$field]) || empty(trim($data[$field]))) {
             sendError("Le champ $field est obligatoire");
         }
     }
     
-    $email = trim($data['email']);
+    $rp_id = trim($data['rp_id']);
     $password = $data['password'];
     
-    // Validation email
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        sendError('Format d\'email invalide');
+    // Validation ID RP (doit être numérique)
+    if (!preg_match('/^[0-9]+$/', $rp_id)) {
+        sendError('L\'ID RP doit contenir uniquement des chiffres');
     }
     
     // Validation mot de passe
@@ -135,18 +135,23 @@ function register() {
         sendError('Le mot de passe doit contenir au moins 6 caractères');
     }
     
+    // Vérification acceptation des conditions
+    if (!isset($data['terms']) || !$data['terms']) {
+        sendError('Vous devez accepter les conditions d\'utilisation');
+    }
+    
     try {
         $db = new Database();
         $conn = $db->getConnection();
         
-        // Vérifier si l'email existe déjà
-        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
-        $stmt->execute([$email]);
+        // Vérifier si l'ID RP existe déjà
+        $stmt = $conn->prepare("SELECT id FROM users WHERE rp_id = ?");
+        $stmt->execute([$rp_id]);
         if ($stmt->fetch()) {
-            sendError('Un compte avec cet email existe déjà');
+            sendError('Un compte avec cet ID RP existe déjà');
         }
         
-        // Générer un ID unique
+        // Générer un ID unique pour le compte
         do {
             $userId = generateUserId();
             $stmt = $conn->prepare("SELECT id FROM users WHERE id = ?");
@@ -156,10 +161,13 @@ function register() {
         // Hasher le mot de passe
         $passwordHash = hashPassword($password);
         
+        // Générer un email unique basé sur l'ID RP
+        $email = 'user_' . $rp_id . '@pizzathis-rp.local';
+        
         // Insérer le nouvel utilisateur
         $stmt = $conn->prepare("
-            INSERT INTO users (id, nom, prenom, email, discord, phone, address, password_hash, newsletter, member_since)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, YEAR(CURDATE()))
+            INSERT INTO users (id, nom, prenom, email, rp_id, discord, password_hash, newsletter, member_since)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, YEAR(CURDATE()))
         ");
         
         $stmt->execute([
@@ -167,9 +175,8 @@ function register() {
             trim($data['nom']),
             trim($data['prenom']),
             $email,
+            $rp_id,
             trim($data['discord']),
-            isset($data['phone']) ? trim($data['phone']) : null,
-            isset($data['address']) ? trim($data['address']) : null,
             $passwordHash,
             isset($data['newsletter']) ? (bool)$data['newsletter'] : false
         ]);
@@ -188,7 +195,7 @@ function register() {
         
         sendResponse([
             'success' => true,
-            'message' => 'Compte créé avec succès',
+            'message' => 'Compte créé avec succès ! Bienvenue chez Pizza This.',
             'user' => $user
         ], 201);
         

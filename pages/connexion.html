@@ -31,8 +31,8 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="login-email">Email ou ID Client</label>
-                    <input type="text" id="login-email" name="identifier" placeholder="votre@email.com ou ID12345" required>
+                    <label for="login-email">Email, ID Client ou ID RP</label>
+                    <input type="text" id="login-email" name="identifier" placeholder="admin@pizzathis.fr, CLIENT001 ou 12345" required>
                 </div>
                 
                 <div class="form-group">
@@ -71,27 +71,22 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="register-nom">Nom</label>
-                        <input type="text" id="register-nom" name="nom" placeholder="Votre nom" required>
+                        <input type="text" id="register-nom" name="nom" placeholder="Votre nom (ex: Parker)" required>
                     </div>
                     <div class="form-group">
                         <label for="register-prenom">Prénom</label>
-                        <input type="text" id="register-prenom" name="prenom" placeholder="Votre prénom" required>
+                        <input type="text" id="register-prenom" name="prenom" placeholder="Votre prénom (ex: Jason)" required>
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="register-email">Adresse email</label>
-                    <input type="email" id="register-email" name="email" placeholder="votre@email.com" required>
+                    <label for="register-rp-id">ID</label>
+                    <input type="text" id="register-rp-id" name="rp_id" placeholder="Votre ID (ex: 37833)" required pattern="[0-9]+" title="L'ID RP doit contenir uniquement des chiffres">
                 </div>
                 
                 <div class="form-group">
                     <label for="register-discord">Pseudo Discord</label>
-                    <input type="text" id="register-discord" name="discord" placeholder="VotrePseudo#1234" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="register-phone">Téléphone</label>
-                    <input type="tel" id="register-phone" name="phone" placeholder="06 12 34 56 78">
+                    <input type="text" id="register-discord" name="discord" placeholder="Vote Pseudo (ex: niavlysdev)" required>
                 </div>
                 
                 <div class="form-row">
@@ -105,11 +100,6 @@
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="register-address">Adresse</label>
-                    <input type="text" id="register-address" name="address" placeholder="123 Rue de la Pizza, 75000 Paris">
-                </div>
-                
                 <div class="form-options">
                     <label class="checkbox-container">
                         <input type="checkbox" name="newsletter">
@@ -119,7 +109,7 @@
                     <label class="checkbox-container">
                         <input type="checkbox" name="terms" required>
                         <span class="checkmark"></span>
-                        J'accepte les <a href="#" target="_blank">conditions d'utilisation</a>
+                        J'accepte les <a href="#" onclick="loadTermsPage()" target="_blank">conditions d'utilisation</a> *
                     </label>
                 </div>
                 

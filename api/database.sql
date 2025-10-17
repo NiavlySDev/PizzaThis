@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     nom VARCHAR(100) NOT NULL,
     prenom VARCHAR(100) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
+    rp_id VARCHAR(10) UNIQUE,
     discord VARCHAR(100),
     phone VARCHAR(20),
     address TEXT,
@@ -96,11 +97,6 @@ CREATE TABLE IF NOT EXISTS site_stats (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Insertion des comptes administrateur et test
-INSERT INTO users (id, nom, prenom, email, discord, phone, address, password_hash, role, newsletter, member_since, loyalty_points) VALUES 
-('ADMIN001', 'Admin', 'Pizza This', 'admin@pizzathis.fr', 'PizzaAdmin#0001', '01 23 45 67 89', '123 Rue de la Pizza, 75000 Paris', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', true, 2020, 1000),
-('CLIENT001', 'Dupont', 'Jean', 'client@test.fr', 'JeanD#1234', '06 12 34 56 78', '456 Avenue des Clients, 75001 Paris', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'client', true, 2023, 150)
-ON DUPLICATE KEY UPDATE email = VALUES(email);
 
 -- Insertion d'articles de test (reprenant ceux du frontend)
 INSERT INTO articles (title, excerpt, content, image_url, author, published_date, status) VALUES 
@@ -114,6 +110,7 @@ ON DUPLICATE KEY UPDATE title = VALUES(title);
 
 -- Index pour améliorer les performances
 CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_rp_id ON users(rp_id);
 CREATE INDEX idx_contacts_status ON contacts(status);
 CREATE INDEX idx_reservations_date ON reservations(reservation_date);
 CREATE INDEX idx_reservations_status ON reservations(status);

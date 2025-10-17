@@ -213,11 +213,23 @@ class PizzaThisApp {
         if (authLink) {
             if (this.user) {
                 authLink.innerHTML = `
-                    <span class="user-info">
-                        <i class="fas fa-user-circle"></i>
-                        ${this.user.prenom} ${this.user.nom}
-                        ${this.user.role === 'admin' ? '<span class="admin-badge"><i class="fas fa-crown"></i> Admin</span>' : ''}
-                    </span>
+                    <div class="user-connected">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name">${this.user.prenom} ${this.user.nom}</div>
+                            <div class="user-role">
+                                ${this.user.role === 'admin' ? 
+                                    '<span class="admin-badge"><i class="fas fa-crown"></i> Administrateur</span>' : 
+                                    '<span class="client-badge"><i class="fas fa-user"></i> Client</span>'
+                                }
+                            </div>
+                        </div>
+                        <div class="user-dropdown">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
                 `;
                 authLink.onclick = () => this.loadPage('connexion');
             } else {
@@ -540,18 +552,27 @@ class PizzaThisApp {
         const data = {
             nom: formData.get('nom'),
             prenom: formData.get('prenom'),
-            email: formData.get('email'),
+            rp_id: formData.get('rp_id'),
             discord: formData.get('discord'),
-            phone: formData.get('phone'),
-            address: formData.get('address'),
             password: formData.get('password'),
             confirm_password: formData.get('confirm_password'),
-            newsletter: formData.get('newsletter') === 'on'
+            newsletter: formData.get('newsletter') === 'on',
+            terms: formData.get('terms') === 'on'
         };
 
         // Validation
-        if (!data.nom || !data.prenom || !data.email || !data.discord || !data.password) {
+        if (!data.nom || !data.prenom || !data.rp_id || !data.discord || !data.password) {
             this.showFormMessage(form, 'Veuillez remplir tous les champs obligatoires.', 'error');
+            return;
+        }
+
+        if (!data.terms) {
+            this.showFormMessage(form, 'Vous devez accepter les conditions d\'utilisation pour créer un compte.', 'error');
+            return;
+        }
+
+        if (!/^[0-9]+$/.test(data.rp_id)) {
+            this.showFormMessage(form, 'L\'ID RP doit contenir uniquement des chiffres.', 'error');
             return;
         }
 
@@ -879,5 +900,11 @@ window.cancelProfileEdit = function() {
                 'success'
             );
         }
+    }
+};
+
+window.loadTermsPage = function() {
+    if (window.pizzaApp) {
+        window.pizzaApp.loadPage('conditions');
     }
 };
