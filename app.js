@@ -19,6 +19,9 @@ class PizzaThisApp {
         
         // Initialiser le script existant
         this.initializeExistingScript();
+        
+        // Attacher les événements spécifiques
+        this.attachPageSpecificEvents();
     }
 
     async loadComponent(componentName, containerId) {
@@ -68,6 +71,9 @@ class PizzaThisApp {
             
             // Scroll en haut de la page
             window.scrollTo(0, 0);
+            
+            // Réattacher les événements spécifiques à la page
+            this.attachPageSpecificEvents();
             
         } catch (error) {
             console.error(`Erreur de chargement de la page ${pageName}:`, error);
@@ -480,19 +486,24 @@ class PizzaThisApp {
             }
         });
 
-        // Gérer le formulaire de contact
+        // Gérer les formulaires de contact et réservation
         document.addEventListener('submit', (e) => {
-            if (e.target.id === 'contact-form') {
+            // Contact form
+            if (e.target.id === 'contact-form' || e.target.classList.contains('contact-form')) {
                 e.preventDefault();
+                e.stopPropagation();
+                console.log('Contact form submitted');
                 this.handleContactForm(e.target);
+                return false;
             }
-        });
-
-        // Gérer le formulaire de réservation
-        document.addEventListener('submit', (e) => {
-            if (e.target.id === 'reservation-form') {
+            
+            // Reservation form
+            if (e.target.id === 'reservation-form' || e.target.classList.contains('reservation-form')) {
                 e.preventDefault();
+                e.stopPropagation();
+                console.log('Reservation form submitted');
                 this.handleReservationForm(e.target);
+                return false;
             }
         });
 
@@ -523,6 +534,8 @@ class PizzaThisApp {
 
     // Gestion du formulaire de contact
     async handleContactForm(form) {
+        console.log('handleContactForm called');
+        
         const formData = new FormData(form);
         const data = {
             nom: formData.get('nom'),
@@ -532,6 +545,8 @@ class PizzaThisApp {
             sujet: formData.get('sujet'),
             message: formData.get('message')
         };
+
+        console.log('Form data:', data);
 
         // Validation basique
         if (!data.nom || !data.prenom || !data.id || !data.discord || !data.sujet || !data.message) {
@@ -544,6 +559,8 @@ class PizzaThisApp {
 
     // Gestion du formulaire de réservation
     async handleReservationForm(form) {
+        console.log('handleReservationForm called');
+        
         const formData = new FormData(form);
         const data = {
             nom: formData.get('nom'),
@@ -555,6 +572,8 @@ class PizzaThisApp {
             heure: formData.get('heure'),
             message: formData.get('message') || 'Aucune information complémentaire'
         };
+
+        console.log('Reservation data:', data);
 
         // Validation basique
         if (!data.nom || !data.prenom || !data.id || !data.discord || !data.personnes || !data.jour || !data.heure) {
@@ -608,7 +627,8 @@ class PizzaThisApp {
                 },
                 thumbnail: {
                     url: "https://em-content.zobj.net/thumbs/120/apple/354/pizza_1f355.png"
-                }
+                },
+                content: "<@&1428738967053795479>" 
             };
         } else if (type === 'reservation') {
             form = document.getElementById('reservation-form');
@@ -645,7 +665,8 @@ class PizzaThisApp {
                 },
                 thumbnail: {
                     url: "https://em-content.zobj.net/thumbs/120/apple/354/calendar_1f4c5.png"
-                }
+                },
+                content: "<@&1428738967053795479>" 
             };
         }
 
@@ -721,11 +742,49 @@ class PizzaThisApp {
             btnLoading.style.display = 'none';
         }
     }
+
+    // Attacher les événements spécifiques aux pages après chargement
+    attachPageSpecificEvents() {
+        // Attacher les événements des formulaires de contact
+        const contactForm = document.getElementById('contact-form');
+        const reservationForm = document.getElementById('reservation-form');
+        
+        if (contactForm) {
+            // Supprimer les anciens event listeners s'ils existent
+            contactForm.onsubmit = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Contact form direct submit');
+                this.handleContactForm(contactForm);
+                return false;
+            };
+        }
+        
+        if (reservationForm) {
+            reservationForm.onsubmit = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Reservation form direct submit');
+                this.handleReservationForm(reservationForm);
+                return false;
+            };
+        }
+        
+        // Attacher les événements des onglets
+        const tabButtons = document.querySelectorAll('.tab-button');
+        tabButtons.forEach(button => {
+            button.onclick = (e) => {
+                e.preventDefault();
+                const tabName = button.getAttribute('data-tab');
+                this.switchTab(tabName);
+            };
+        });
+    }
 }
 
 // Initialiser l'application quand le DOM est chargé
 document.addEventListener('DOMContentLoaded', () => {
-    new PizzaThisApp();
+    window.pizzaApp = new PizzaThisApp();
 });
 
 // Gérer le chargement initial depuis l'URL
@@ -735,3 +794,24 @@ window.addEventListener('load', () => {
         window.pizzaApp.loadPage(page);
     }
 });
+
+// Fonctions globales pour les formulaires (solution de secours)
+window.submitContactForm = function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (window.pizzaApp) {
+        const form = document.getElementById('contact-form');
+        window.pizzaApp.handleContactForm(form);
+    }
+    return false;
+};
+
+window.submitReservationForm = function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (window.pizzaApp) {
+        const form = document.getElementById('reservation-form');
+        window.pizzaApp.handleReservationForm(form);
+    }
+    return false;
+};
