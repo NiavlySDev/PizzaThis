@@ -1,0 +1,285 @@
+<!-- Login/Register Hero Section -->
+<section class="auth-hero">
+    <div class="container">
+        <h1>Espace Client Pizza This</h1>
+        <p>Connectez-vous ou créez votre compte pour profiter de nos services exclusifs</p>
+    </div>
+</section>
+
+<!-- Authentication Section -->
+<section class="auth-section">
+    <div class="container">
+        <!-- Onglets pour les différentes actions -->
+        <div class="auth-tabs">
+            <button type="button" class="auth-tab-button active" data-auth-tab="login">
+                🔑 Connexion
+            </button>
+            <button type="button" class="auth-tab-button" data-auth-tab="register">
+                📝 Inscription
+            </button>
+            <button type="button" class="auth-tab-button" data-auth-tab="profile" style="display: none;">
+                👤 Mon Profil
+            </button>
+        </div>
+
+        <!-- Formulaire de Connexion -->
+        <div id="login-tab" class="auth-container active">
+            <form class="auth-form" id="login-form" method="post" action="#" onsubmit="return submitLoginForm(event);">
+                <div class="auth-header">
+                    <h3>🔑 Connexion</h3>
+                    <p class="auth-description">Connectez-vous à votre espace client</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-email">Email ou ID Client</label>
+                    <input type="text" id="login-email" name="identifier" placeholder="votre@email.com ou ID12345" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password">Mot de passe</label>
+                    <input type="password" id="login-password" name="password" placeholder="Votre mot de passe" required>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="remember">
+                        <span class="checkmark"></span>
+                        Se souvenir de moi
+                    </label>
+                    <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+                </div>
+                
+                <button type="submit" class="btn-primary auth-btn">
+                    <span class="btn-text">Se connecter</span>
+                    <span class="btn-loading" style="display: none;">Connexion...</span>
+                </button>
+                
+                <div class="auth-switch">
+                    <p>Pas encore de compte ? <a href="#" onclick="switchAuthTab('register')">S'inscrire</a></p>
+                </div>
+            </form>
+        </div>
+
+        <!-- Formulaire d'Inscription -->
+        <div id="register-tab" class="auth-container">
+            <form class="auth-form" id="register-form" method="post" action="#" onsubmit="return submitRegisterForm(event);">
+                <div class="auth-header">
+                    <h3>📝 Créer un compte</h3>
+                    <p class="auth-description">Rejoignez la communauté Pizza This</p>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="register-nom">Nom</label>
+                        <input type="text" id="register-nom" name="nom" placeholder="Votre nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-prenom">Prénom</label>
+                        <input type="text" id="register-prenom" name="prenom" placeholder="Votre prénom" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-email">Adresse email</label>
+                    <input type="email" id="register-email" name="email" placeholder="votre@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-discord">Pseudo Discord</label>
+                    <input type="text" id="register-discord" name="discord" placeholder="VotrePseudo#1234" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-phone">Téléphone</label>
+                    <input type="tel" id="register-phone" name="phone" placeholder="06 12 34 56 78">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="register-password">Mot de passe</label>
+                        <input type="password" id="register-password" name="password" placeholder="Minimum 8 caractères" required minlength="8">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm">Confirmer le mot de passe</label>
+                        <input type="password" id="register-confirm" name="confirm_password" placeholder="Répétez le mot de passe" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-address">Adresse</label>
+                    <input type="text" id="register-address" name="address" placeholder="123 Rue de la Pizza, 75000 Paris">
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="newsletter">
+                        <span class="checkmark"></span>
+                        S'abonner à la newsletter
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="terms" required>
+                        <span class="checkmark"></span>
+                        J'accepte les <a href="#" target="_blank">conditions d'utilisation</a>
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn-primary auth-btn">
+                    <span class="btn-text">Créer mon compte</span>
+                    <span class="btn-loading" style="display: none;">Création...</span>
+                </button>
+                
+                <div class="auth-switch">
+                    <p>Déjà un compte ? <a href="#" onclick="switchAuthTab('login')">Se connecter</a></p>
+                </div>
+            </form>
+        </div>
+
+        <!-- Profil Utilisateur -->
+        <div id="profile-tab" class="auth-container">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <div class="avatar-placeholder">👤</div>
+                    <button class="change-avatar-btn">Changer</button>
+                </div>
+                <div class="profile-info">
+                    <h3 id="profile-name">Nom Prénom</h3>
+                    <p id="profile-id">ID: CLIENT12345</p>
+                    <span class="profile-status active">Compte Actif</span>
+                </div>
+                <button class="logout-btn" onclick="logout()">🚪 Déconnexion</button>
+            </div>
+
+            <form class="auth-form" id="profile-form" method="post" action="#" onsubmit="return submitProfileForm(event);">
+                <div class="auth-header">
+                    <h3>👤 Mes informations personnelles</h3>
+                    <p class="auth-description">Modifiez vos informations de compte</p>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="profile-nom">Nom</label>
+                        <input type="text" id="profile-nom" name="nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-prenom">Prénom</label>
+                        <input type="text" id="profile-prenom" name="prenom" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-email">Adresse email</label>
+                    <input type="email" id="profile-email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-discord">Pseudo Discord</label>
+                    <input type="text" id="profile-discord" name="discord" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-phone">Téléphone</label>
+                    <input type="tel" id="profile-phone" name="phone">
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-address">Adresse</label>
+                    <input type="text" id="profile-address" name="address">
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-current-password">Mot de passe actuel (pour confirmer les modifications)</label>
+                    <input type="password" id="profile-current-password" name="current_password" placeholder="Saisissez votre mot de passe actuel">
+                </div>
+                
+                <div class="password-section">
+                    <h4>🔐 Changer le mot de passe (optionnel)</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="profile-new-password">Nouveau mot de passe</label>
+                            <input type="password" id="profile-new-password" name="new_password" placeholder="Minimum 8 caractères" minlength="8">
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-confirm-password">Confirmer le nouveau mot de passe</label>
+                            <input type="password" id="profile-confirm-password" name="confirm_new_password" placeholder="Répétez le nouveau mot de passe">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="profile-newsletter" name="newsletter">
+                        <span class="checkmark"></span>
+                        Recevoir la newsletter
+                    </label>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="button" class="btn-secondary" onclick="cancelProfileEdit()">Annuler</button>
+                    <button type="submit" class="btn-primary auth-btn">
+                        <span class="btn-text">Sauvegarder</span>
+                        <span class="btn-loading" style="display: none;">Sauvegarde...</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Statistiques du compte -->
+            <div class="profile-stats">
+                <h4>📊 Statistiques de votre compte</h4>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-orders">0</div>
+                        <div class="stat-label">Commandes totales</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-spent">0€</div>
+                        <div class="stat-label">Montant dépensé</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="loyalty-points">0</div>
+                        <div class="stat-label">Points fidélité</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="member-since">2025</div>
+                        <div class="stat-label">Membre depuis</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Admin Panel (visible uniquement pour les admins) -->
+<section class="admin-section" id="admin-panel" style="display: none;">
+    <div class="container">
+        <div class="admin-header">
+            <h2>🛠️ Panel Administrateur</h2>
+            <p>Gestion avancée du système Pizza This</p>
+        </div>
+        
+        <div class="admin-grid">
+            <div class="admin-card">
+                <h3>👥 Gestion des utilisateurs</h3>
+                <p>Voir, modifier ou supprimer les comptes clients</p>
+                <button class="btn-secondary">Gérer les utilisateurs</button>
+            </div>
+            
+            <div class="admin-card">
+                <h3>📊 Statistiques</h3>
+                <p>Tableaux de bord et rapports détaillés</p>
+                <button class="btn-secondary">Voir les stats</button>
+            </div>
+            
+            <div class="admin-card">
+                <h3>🍕 Gestion du menu</h3>
+                <p>Ajouter, modifier ou supprimer des produits</p>
+                <button class="btn-secondary">Gérer le menu</button>
+            </div>
+            
+            <div class="admin-card">
+                <h3>📰 Gestion des actualités</h3>
+                <p>Créer et publier des articles</p>
+                <button class="btn-secondary">Gérer les actualités</button>
+            </div>
+        </div>
+    </div>
+</section>

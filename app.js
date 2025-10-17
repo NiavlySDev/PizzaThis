@@ -627,8 +627,7 @@ class PizzaThisApp {
                 },
                 thumbnail: {
                     url: "https://em-content.zobj.net/thumbs/120/apple/354/pizza_1f355.png"
-                },
-                content: "<@&1428738967053795479>" 
+                }
             };
         } else if (type === 'reservation') {
             form = document.getElementById('reservation-form');
@@ -665,8 +664,7 @@ class PizzaThisApp {
                 },
                 thumbnail: {
                     url: "https://em-content.zobj.net/thumbs/120/apple/354/calendar_1f4c5.png"
-                },
-                content: "<@&1428738967053795479>" 
+                }
             };
         }
 
@@ -680,6 +678,7 @@ class PizzaThisApp {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    content: `<@&1428738967053795479>`,
                     embeds: [embed]
                 })
             });
@@ -769,6 +768,41 @@ class PizzaThisApp {
                 return false;
             };
         }
+
+        // Attacher les événements des formulaires d'authentification
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const profileForm = document.getElementById('profile-form');
+        
+        if (loginForm) {
+            loginForm.onsubmit = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Login form direct submit');
+                this.handleLoginForm(loginForm);
+                return false;
+            };
+        }
+        
+        if (registerForm) {
+            registerForm.onsubmit = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Register form direct submit');
+                this.handleRegisterForm(registerForm);
+                return false;
+            };
+        }
+        
+        if (profileForm) {
+            profileForm.onsubmit = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Profile form direct submit');
+                this.handleProfileForm(profileForm);
+                return false;
+            };
+        }
         
         // Attacher les événements des onglets
         const tabButtons = document.querySelectorAll('.tab-button');
@@ -779,6 +813,326 @@ class PizzaThisApp {
                 this.switchTab(tabName);
             };
         });
+
+        // Attacher les événements des onglets d'authentification
+        const authTabButtons = document.querySelectorAll('.auth-tab-button');
+        authTabButtons.forEach(button => {
+            button.onclick = (e) => {
+                e.preventDefault();
+                const tabName = button.getAttribute('data-auth-tab');
+                this.switchAuthTab(tabName);
+            };
+        });
+
+        // Vérifier l'état de connexion et mettre à jour l'interface
+        this.checkAuthState();
+    }
+
+    // Gestion de l'authentification
+    switchAuthTab(tabName) {
+        // Désactiver tous les onglets et contenus
+        document.querySelectorAll('.auth-tab-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelectorAll('.auth-container').forEach(container => {
+            container.classList.remove('active');
+        });
+
+        // Activer l'onglet et le contenu sélectionnés
+        const targetButton = document.querySelector(`[data-auth-tab="${tabName}"]`);
+        const targetContainer = document.getElementById(`${tabName}-tab`);
+        
+        if (targetButton && targetContainer) {
+            targetButton.classList.add('active');
+            targetContainer.classList.add('active');
+        }
+    }
+
+    // Vérifier l'état de connexion
+    checkAuthState() {
+        const user = this.getCurrentUser();
+        const authNavLink = document.getElementById('auth-nav-link');
+        
+        if (user) {
+            // Utilisateur connecté
+            if (authNavLink) {
+                authNavLink.textContent = `👤 ${user.prenom}`;
+                authNavLink.setAttribute('data-page', 'connexion');
+            }
+            
+            // Afficher l'onglet profil si on est sur la page connexion
+            const profileTab = document.querySelector('[data-auth-tab="profile"]');
+            if (profileTab) {
+                profileTab.style.display = 'block';
+            }
+            
+            // Afficher le panel admin si l'utilisateur est admin
+            if (user.role === 'admin') {
+                const adminPanel = document.getElementById('admin-panel');
+                if (adminPanel) {
+                    adminPanel.style.display = 'block';
+                }
+            }
+        } else {
+            // Utilisateur déconnecté
+            if (authNavLink) {
+                authNavLink.textContent = '🔑 Connexion';
+            }
+        }
+    }
+
+    // Obtenir l'utilisateur actuel
+    getCurrentUser() {
+        const userData = localStorage.getItem('pizzathis_user');
+        return userData ? JSON.parse(userData) : null;
+    }
+
+    // Sauvegarder l'utilisateur
+    saveUser(userData) {
+        localStorage.setItem('pizzathis_user', JSON.stringify(userData));
+        this.checkAuthState();
+    }
+
+    // Déconnexion
+    logout() {
+        localStorage.removeItem('pizzathis_user');
+        this.checkAuthState();
+        this.loadPage('accueil');
+        this.showFormMessage(document.body, 'Vous avez été déconnecté avec succès.', 'success');
+    }
+
+    // Gestion du formulaire de connexion
+    async handleLoginForm(form) {
+        console.log('handleLoginForm called');
+        
+        const formData = new FormData(form);
+        const data = {
+            identifier: formData.get('identifier'),
+            password: formData.get('password'),
+            remember: formData.get('remember') === 'on'
+        };
+
+        console.log('Login data:', data);
+
+        // Validation basique
+        if (!data.identifier || !data.password) {
+            this.showFormMessage(form, 'Veuillez remplir tous les champs.', 'error');
+            return;
+        }
+
+        // Simulation de connexion (à remplacer par une vraie API)
+        this.toggleFormLoading(form, true);
+        
+        setTimeout(() => {
+            // Simulation d'une réponse serveur
+            const userData = this.simulateLogin(data.identifier, data.password);
+            
+            if (userData) {
+                this.saveUser(userData);
+                this.showFormMessage(form, 'Connexion réussie ! Bienvenue.', 'success');
+                
+                setTimeout(() => {
+                    this.switchAuthTab('profile');
+                    this.populateProfile(userData);
+                }, 1000);
+            } else {
+                this.showFormMessage(form, 'Identifiants incorrects.', 'error');
+            }
+            
+            this.toggleFormLoading(form, false);
+        }, 1500);
+    }
+
+    // Gestion du formulaire d'inscription
+    async handleRegisterForm(form) {
+        console.log('handleRegisterForm called');
+        
+        const formData = new FormData(form);
+        const data = {
+            nom: formData.get('nom'),
+            prenom: formData.get('prenom'),
+            email: formData.get('email'),
+            discord: formData.get('discord'),
+            phone: formData.get('phone'),
+            password: formData.get('password'),
+            confirm_password: formData.get('confirm_password'),
+            address: formData.get('address'),
+            newsletter: formData.get('newsletter') === 'on',
+            terms: formData.get('terms') === 'on'
+        };
+
+        console.log('Register data:', data);
+
+        // Validation
+        if (!data.nom || !data.prenom || !data.email || !data.discord || !data.password) {
+            this.showFormMessage(form, 'Veuillez remplir tous les champs obligatoires.', 'error');
+            return;
+        }
+
+        if (data.password !== data.confirm_password) {
+            this.showFormMessage(form, 'Les mots de passe ne correspondent pas.', 'error');
+            return;
+        }
+
+        if (!data.terms) {
+            this.showFormMessage(form, 'Vous devez accepter les conditions d\'utilisation.', 'error');
+            return;
+        }
+
+        // Simulation d'inscription
+        this.toggleFormLoading(form, true);
+        
+        setTimeout(() => {
+            const newUser = {
+                id: 'CLIENT' + Math.floor(Math.random() * 100000),
+                nom: data.nom,
+                prenom: data.prenom,
+                email: data.email,
+                discord: data.discord,
+                phone: data.phone,
+                address: data.address,
+                newsletter: data.newsletter,
+                role: 'client',
+                memberSince: new Date().getFullYear(),
+                orders: 0,
+                totalSpent: 0,
+                loyaltyPoints: 50 // Bonus d'inscription
+            };
+
+            this.saveUser(newUser);
+            this.showFormMessage(form, 'Compte créé avec succès ! Bienvenue chez Pizza This.', 'success');
+            
+            setTimeout(() => {
+                this.switchAuthTab('profile');
+                this.populateProfile(newUser);
+            }, 1500);
+            
+            this.toggleFormLoading(form, false);
+        }, 2000);
+    }
+
+    // Gestion du formulaire de profil
+    async handleProfileForm(form) {
+        console.log('handleProfileForm called');
+        
+        const formData = new FormData(form);
+        const currentUser = this.getCurrentUser();
+        
+        if (!currentUser) {
+            this.showFormMessage(form, 'Vous devez être connecté pour modifier votre profil.', 'error');
+            return;
+        }
+
+        const data = {
+            nom: formData.get('nom'),
+            prenom: formData.get('prenom'),
+            email: formData.get('email'),
+            discord: formData.get('discord'),
+            phone: formData.get('phone'),
+            address: formData.get('address'),
+            current_password: formData.get('current_password'),
+            new_password: formData.get('new_password'),
+            confirm_new_password: formData.get('confirm_new_password'),
+            newsletter: formData.get('newsletter') === 'on'
+        };
+
+        // Validation
+        if (!data.current_password) {
+            this.showFormMessage(form, 'Veuillez saisir votre mot de passe actuel pour confirmer les modifications.', 'error');
+            return;
+        }
+
+        if (data.new_password && data.new_password !== data.confirm_new_password) {
+            this.showFormMessage(form, 'Les nouveaux mots de passe ne correspondent pas.', 'error');
+            return;
+        }
+
+        // Simulation de mise à jour
+        this.toggleFormLoading(form, true);
+        
+        setTimeout(() => {
+            const updatedUser = {
+                ...currentUser,
+                nom: data.nom,
+                prenom: data.prenom,
+                email: data.email,
+                discord: data.discord,
+                phone: data.phone,
+                address: data.address,
+                newsletter: data.newsletter
+            };
+
+            this.saveUser(updatedUser);
+            this.showFormMessage(form, 'Profil mis à jour avec succès !', 'success');
+            this.toggleFormLoading(form, false);
+        }, 1500);
+    }
+
+    // Simulation de connexion (à remplacer par une vraie API)
+    simulateLogin(identifier, password) {
+        // Comptes de test
+        const testAccounts = {
+            'admin@pizzathis.fr': {
+                password: 'admin123',
+                id: 'ADMIN001',
+                nom: 'Admin',
+                prenom: 'Pizza This',
+                email: 'admin@pizzathis.fr',
+                discord: 'PizzaAdmin#0001',
+                phone: '01 23 45 67 89',
+                address: '123 Rue de la Pizza, 75000 Paris',
+                role: 'admin',
+                memberSince: 2020,
+                orders: 0,
+                totalSpent: 0,
+                loyaltyPoints: 1000
+            },
+            'client@test.fr': {
+                password: 'client123',
+                id: 'CLIENT001',
+                nom: 'Dupont',
+                prenom: 'Jean',
+                email: 'client@test.fr',
+                discord: 'JeanD#1234',
+                phone: '06 12 34 56 78',
+                address: '456 Avenue des Clients, 75001 Paris',
+                role: 'client',
+                memberSince: 2023,
+                orders: 15,
+                totalSpent: 245.50,
+                loyaltyPoints: 125
+            }
+        };
+
+        const account = testAccounts[identifier];
+        if (account && account.password === password) {
+            // Retourner les données utilisateur sans le mot de passe
+            const { password: _, ...userData } = account;
+            return userData;
+        }
+        
+        return null;
+    }
+
+    // Remplir le formulaire de profil avec les données utilisateur
+    populateProfile(userData) {
+        document.getElementById('profile-name').textContent = `${userData.prenom} ${userData.nom}`;
+        document.getElementById('profile-id').textContent = `ID: ${userData.id}`;
+        
+        // Remplir les champs du formulaire
+        document.getElementById('profile-nom').value = userData.nom;
+        document.getElementById('profile-prenom').value = userData.prenom;
+        document.getElementById('profile-email').value = userData.email;
+        document.getElementById('profile-discord').value = userData.discord;
+        document.getElementById('profile-phone').value = userData.phone || '';
+        document.getElementById('profile-address').value = userData.address || '';
+        document.getElementById('profile-newsletter').checked = userData.newsletter || false;
+        
+        // Remplir les statistiques
+        document.getElementById('total-orders').textContent = userData.orders || 0;
+        document.getElementById('total-spent').textContent = `${userData.totalSpent || 0}€`;
+        document.getElementById('loyalty-points').textContent = userData.loyaltyPoints || 0;
+        document.getElementById('member-since').textContent = userData.memberSince || 2025;
     }
 }
 
@@ -814,4 +1168,61 @@ window.submitReservationForm = function(event) {
         window.pizzaApp.handleReservationForm(form);
     }
     return false;
+};
+
+// Fonctions d'authentification globales
+window.submitLoginForm = function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (window.pizzaApp) {
+        const form = document.getElementById('login-form');
+        window.pizzaApp.handleLoginForm(form);
+    }
+    return false;
+};
+
+window.submitRegisterForm = function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (window.pizzaApp) {
+        const form = document.getElementById('register-form');
+        window.pizzaApp.handleRegisterForm(form);
+    }
+    return false;
+};
+
+window.submitProfileForm = function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (window.pizzaApp) {
+        const form = document.getElementById('profile-form');
+        window.pizzaApp.handleProfileForm(form);
+    }
+    return false;
+};
+
+window.switchAuthTab = function(tabName) {
+    if (window.pizzaApp) {
+        window.pizzaApp.switchAuthTab(tabName);
+    }
+};
+
+window.logout = function() {
+    if (window.pizzaApp) {
+        window.pizzaApp.logout();
+    }
+};
+
+window.cancelProfileEdit = function() {
+    if (window.pizzaApp) {
+        const user = window.pizzaApp.getCurrentUser();
+        if (user) {
+            window.pizzaApp.populateProfile(user);
+            window.pizzaApp.showFormMessage(
+                document.getElementById('profile-form'), 
+                'Modifications annulées.', 
+                'success'
+            );
+        }
+    }
 };
